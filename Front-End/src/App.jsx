@@ -1,10 +1,16 @@
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './Pages/Login';
 
 function App() {
-
   return (
-   <div className="text-3xl text-red-500">Welcome to EMS</div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        {/* You can add more routes here */}
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
