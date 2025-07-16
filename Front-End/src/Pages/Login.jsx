@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios'
+import { useAuth } from '../Context/Authcontext';
+import { useNavigate } from 'react-router-dom';
 
 function Login (){
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
+  const [error,setError]=useState(null)
+  const {login}= useAuth()
+  const navigate = useNavigate()
   const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const handleSubmit= async (e)=>{
@@ -12,10 +17,22 @@ function Login (){
       const response = await axios.post(`${apiUrl}/api/auth/login`,
       {email,password}
       );
-      console.log(response);
+      if (response.data.success) {
+       login(response.data.user)
+       localStorage.setItem("token",response.data.token)
+       if(response.data.user.role === 'admin'){
+        navigate('/admin-dashboard')
+       }else{
+        navigate('/employee-dashboard')
+       }
+      }
       
     } catch (error) {
-      console.log(error);
+      if(error.response && !error.response.data.success){
+        setError(error.response.data.error)
+      }else{
+        setError("Server Error")
+      }
       
     }
   }
@@ -37,6 +54,7 @@ function Login (){
             aria-describedby="emailHelp"
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onChange={(e)=> setEmail(e.target.value)}
+            required
           />
         </div>
         
@@ -53,6 +71,7 @@ function Login (){
             id="exampleInputPassword1"
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onChange={(e)=> setPassword(e.target.value)}
+            required
           />
         </div>
         
@@ -63,6 +82,7 @@ function Login (){
         >
           Login
         </button>
+        {error && <p className='text-red-500'>{error}</p>}
       </form>
     </div>
   );
