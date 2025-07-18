@@ -1,1 +1,11 @@
 @import "tailwindcss";
+/* styles.css or your main CSS file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-pacifico {
+    font-family: 'Pacifico', cursive;
+  }
+}

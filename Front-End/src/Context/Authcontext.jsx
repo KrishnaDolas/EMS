@@ -30,6 +30,7 @@ const AuthProvider = ({ children }) => {
             // If verification failed, remove token and navigate to login
             localStorage.removeItem('token');
             setUser(null);
+            setLoading(false)
             // Optional: navigate to login
             // navigate('/login');
           }
