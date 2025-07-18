@@ -6,7 +6,7 @@ const AdminSidebar = () => {
   const navItems = [
     { to: '/admin-dashboard', icon: <FcHome className='w-5 h-5' />, label: 'Dashboard' },
     { to: '/employees', icon: <FcConferenceCall className='w-5 h-5' />, label: 'Employees' },
-    { to: '/departments', icon: <FcDepartment className='w-5 h-5' />, label: 'Departments' },
+    { to: '/admin-dashboard/departments', icon: <FcDepartment className='w-5 h-5' />, label: 'Departments' },
     { to: '/leaves', icon: <FcPlanner className='w-5 h-5' />, label: 'Leaves' },
     { to: '/salary', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Salary' },
     { to: '/settings', icon: <FcServices className='w-5 h-5' />, label: 'Setting' },
@@ -32,6 +32,7 @@ const AdminSidebar = () => {
                   : 'hover:bg-gray-700 hover:scale-105'
               }`
             }
+            end
           >
             <div className='mr-3'>{item.icon}</div>
             <span className='text-medium'>{item.label}</span>
