@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRouter from './Routes/Auth.js'; // Corrected path
+import departmentRouter from './Routes/department.js';
 import connectToDatabase from './db/db.js';
 
 import dotenv from 'dotenv'; // Import dotenv
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Mount the auth routes under /api/auth
 app.use('/api/auth', authRouter);
+app.use('/api/department', departmentRouter);
 
 const PORT = process.env.PORT || 5000;
 
