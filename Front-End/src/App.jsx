@@ -9,6 +9,7 @@ import RolebasedRoutes from './Utils/RolebasedRoutes'
 import AdminSummary from './Components/AdminSummary'
 import DepartmentList from './Pages/Admin/DepartmentList'
 import AddDepartment from './Pages/Admin/AddDepartment'
+import Editdepartment from './Pages/Admin/Editdepartment'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Route index element={<AdminSummary/>}></Route>
       <Route path='/admin-dashboard/departments' element={<DepartmentList/>}></Route>
       <Route path='/admin-dashboard/add-department' element={<AddDepartment/>}></Route>
+      <Route path='/admin-dashboard/department/:id' element={<Editdepartment/>}></Route>
       </Route>
 
                                         {/* Employee Routes  */}
