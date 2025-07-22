@@ -5,7 +5,7 @@ import { FcHome, FcConferenceCall, FcDepartment, FcPlanner, FcMoneyTransfer, FcS
 const AdminSidebar = () => {
   const navItems = [
     { to: '/admin-dashboard', icon: <FcHome className='w-5 h-5' />, label: 'Dashboard' },
-    { to: '/employees', icon: <FcConferenceCall className='w-5 h-5' />, label: 'Employees' },
+    { to: '/admin-dashboard/employees', icon: <FcConferenceCall className='w-5 h-5' />, label: 'Employees' },
     { to: '/admin-dashboard/departments', icon: <FcDepartment className='w-5 h-5' />, label: 'Departments' },
     { to: '/leaves', icon: <FcPlanner className='w-5 h-5' />, label: 'Leaves' },
     { to: '/salary', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Salary' },
