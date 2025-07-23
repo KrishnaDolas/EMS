@@ -2,6 +2,7 @@ import multer, { diskStorage } from "multer";
 import Employee from "../Modules/Employee.js"
 import User from "../Modules/User.js"
 import bcrypt from 'bcrypt'
+import path from 'path';
 
 const storage = multer.diskStorage({
     destination:(req,files,cb)=>{
@@ -17,8 +18,8 @@ const upload = multer({storage:storage})
 const addEmployee = async (req,res)=>{
     try{
     const {name,email,employeeId,dob,gender,maritalStatus,designation,department,salary,password,role}=req.body;
-    const User= await User.findOne({email})
-    if(user){
+    const existingUser = await User.findOne({email})
+    if(existingUser ){
         return res.status (400).json({success:false,error:'User Already Registered In Employee'})
     }
     const hashPassword = await bcrypt.hash(password,10)
@@ -41,7 +42,31 @@ const addEmployee = async (req,res)=>{
     await newEmployee.save()
     return res.status(200).json({success:true,message:'Employee Created'})
     } catch(error){
+        console.log(error.message);
+        
         return res.status(500).json({success:false,error:'Server Error In Adding Employee'})
     }
 }
-export {addEmployee,upload}
+
+const getEmployees = async (req,res)=>{
+     try {
+    const {id}=req.params;
+   const employees = await Employee.find().populate('userId',{password:0}).populate('department')
+     return res.status(200).json({success:true,employees})
+    } catch (error) {
+         return res.status(500).json({success:false,error:'Get Employees Server Error'})
+    }
+}
+
+const getEmployee = async(req,res)=>{
+    const {id}= req.params;
+      try {
+    const {id}=req.params;
+   const employees = await Employee.findById({_id: id}).populate('userId',{password:0}).populate('department')
+     return res.status(200).json({success:true,employees})
+    } catch (error) {
+         return res.status(500).json({success:false,error:'Get Employees Server Error'})
+    }
+}
+
+export {addEmployee,upload,getEmployees,getEmployee}

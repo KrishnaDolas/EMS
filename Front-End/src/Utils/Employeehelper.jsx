@@ -1,5 +1,46 @@
 import axios from "axios"
+import { Navigate, useNavigate } from "react-router-dom";
 const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+
+
+export const columns=[
+    {
+        name :'Sr No',
+        selector:(row)=> row.srno,
+        width:'80px'
+    },
+
+    {
+        name :'Name',
+        selector:(row)=> row.name,
+        sortable:true,
+        width:'200px'
+    },
+
+    {
+        name :'Image',
+        selector:(row)=> row.profileImage,
+        width:'150px',
+    },
+
+    {
+        name :'Department',
+        selector:(row)=> row.dep_name,
+         width:'150px'
+    },
+
+    {
+        name :'DOB',
+        selector:(row)=> row.dob,
+        sortable:true,
+         width:'150px'
+    },
+
+    {
+        name :'Action',
+        selector:(row)=> row.action
+    },
+]
 
  export const fetchDepartments = async()=>{
     let departments
@@ -19,3 +60,27 @@ const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
       }
       return departments
     }
+
+    export const EmployeeButtons = ({_id}) => {
+      const navigate = useNavigate();
+      const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+    
+      return (
+        <div className="flex gap-2 space-x-3">
+          <button className="px-3 py-1 bg-teal-600 text-white rounded hover:bg-blue-700 transition" onClick={()=>navigate(`/admin-dashboard/employees/${_id}`)}>
+            View
+          </button>
+          <button className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-red-700 transition">
+            Edit
+          </button>
+
+           <button className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-red-700 transition">
+            Salary
+          </button>
+
+           <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">
+            Leave
+          </button>
+        </div>
+      );
+    };
