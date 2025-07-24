@@ -10,6 +10,7 @@ import { FcBusinessman } from "react-icons/fc";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([])
   const [empLoading, setEmpLoading] = useState(false)
+  const [filteredEmployee, setFilteredEmployee]=useState([])
   const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   useEffect(() => {
@@ -45,7 +46,8 @@ const EmployeeList = () => {
             action: <EmployeeButtons Id={emp._id} />,
           }));
 
-          setEmployees(data)
+          setEmployees(data);
+          setFilteredEmployee(data)
         }
       } catch (error) {
         if (error.response && !error.response.data.success) {
@@ -58,6 +60,13 @@ const EmployeeList = () => {
     }
     fetchEmployees();
   }, [])
+
+  const handleFilter = (e) =>{
+    const  records = employees.filter((emp) =>(
+      emp.name.toLowerCase().includes(e.target.value.toLowerCase())
+    ))
+    setFilteredEmployee(records)
+  }
 
   const customStyles = {
     headRow: {
@@ -139,6 +148,7 @@ const EmployeeList = () => {
             <input
               type="text"
               placeholder="Search departments..."
+              onChange={handleFilter}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-teal-500"
             // onChange={filterDepartments}
             />
@@ -168,7 +178,7 @@ const EmployeeList = () => {
         <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-lg bg-white max-w-[1500px] mx-auto">
           <DataTable
             columns={columns}
-            data={employees}
+            data={filteredEmployee}
             pagination
             customStyles={customStyles}
           />
