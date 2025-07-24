@@ -1,68 +1,161 @@
-import React from 'react'
-import { useState } from 'react'
-import { useParams,useEffect } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import {
+  FaBirthdayCake,
+  FaMars,
+  FaVenus,
+  FaBuilding,
+  FaUserTie,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkedAlt,
+  FaRegCalendarAlt,
+  FaBriefcase,
+  FaMoneyBillWave,
+} from 'react-icons/fa'
+import { FcBusinessman } from "react-icons/fc";
 
 const ViewEmployee = () => {
-    const {id}= useParams()
-    const [employee,setEmployee]=useState([])
-    const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  const { id } = useParams()
+  const [employee, setEmployee] = useState(null)
+  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms'
 
-      useEffect(()=>{
-    const fetchEmployee = async()=>{
+  useEffect(() => {
+    const fetchEmployee = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/employee/${id}`,{
-          headers:{
-            "Authorization": `Bearer ${localStorage.getItem('token')}`
-          }
+        const res = await axios.get(`${apiUrl}/api/employee/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         })
-        if(response.data.success){
-         setEmployee(response.data.employee)
+        if (res.data.success) {
+          setEmployee(res.data.employee)
+        } else {
+          alert('Failed to fetch employee.')
         }
-      } catch (error) {
-        if(error.response && !error.response.data.success){
-          alert(error.response.data.error)
-        }
+      } catch (err) {
+        console.error(err)
+        alert('Error fetching employee.')
       }
     }
-    fetchEmployee();
-  },[])
+    fetchEmployee()
+  }, [id])
+
+  if (!employee) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 text-xl font-semibold text-gray-600">
+        Loading...
+      </div>
+    )
+  }
+
+  const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString()
+
   return (
-    <div className='max-w-3xl mx-auto mt-10- bg-white p-8 rounded-md shadow-md'>
-        <h2 className='text-2xl font-bold mb-8 text-center'>Employee Details</h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-            <div>
-                <img src={`http://localhost:8000/${emp.userId.profileImage}`} className='rounded-full border w-72'/>
+    <div className="max-w-5xl mx-auto px-6 py-16 relative">
+      <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl shadow-2xl p-10 relative overflow-hidden">
+        {/* Profile Image — top right */}
+        <div className="absolute top-6 right-6">
+          {employee.userId.profileImage && employee.userId.profileImage.trim().length > 0 ? (
+            <img
+              src={`http://localhost:8000/${employee.userId.profileImage}`}
+              alt="Profile"
+              className="w-36 h-36 md:w-44 md:h-44 rounded-full object-cover border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-full bg-white border-4 border-white shadow-lg">
+              <FcBusinessman className="w-24 h-24 md:w-28 md:h-28" />
             </div>
-            <div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Name:</p>
-                    <p className='font-medium'>{employee.userId.name}</p>
-                </div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Employee ID:</p>
-                    <p className='font-medium'>{employee.employeeId}</p>
-                </div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Date Of Birth:</p>
-                    <p className='font-medium'>{new Date(employee.dob).toLocaleDateString}</p>
-                </div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Gender:</p>
-                    <p className='font-medium'>{employee.gender}</p>
-                </div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Department:</p>
-                    <p className='font-medium'>{employee.department.dep_name}</p>
-                </div>
-                <div className='flex space-x-3 mb-5'>
-                    <p className='text-lg font-bold'>Marital Status:</p>
-                    <p className='font-medium'>{employee.maritalStatus}</p>
-                </div>
-            </div>
+          )}
         </div>
+
+
+        {/* Heading */}
+        <h2 className="text-4xl font-extrabold text-gray-800 mb-4 text-left">
+          Employee Profile
+        </h2>
+
+        {/* Name + ID */}
+        <div className="mb-8 text-left">
+          <h3 className="text-3xl font-bold text-gray-800">{employee.userId.name}</h3>
+          <p className="text-gray-600">
+            Employee ID: <span className="font-medium">{employee.employeeId}</span>
+          </p>
+        </div>
+
+        {/* Details Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
+          <InfoCard
+            icon={<FaBirthdayCake className="text-pink-500" />}
+            title="Date of Birth"
+            value={formatDate(employee.dob)}
+          />
+          <InfoCard
+            icon={
+              employee.gender.toLowerCase() === 'male' ? (
+                <FaMars className="text-blue-500" />
+              ) : (
+                <FaVenus className="text-pink-400" />
+              )
+            }
+            title="Gender"
+            value={employee.gender}
+          />
+          <InfoCard
+            icon={<FaBuilding className="text-green-500" />}
+            title="Department"
+            value={employee.department.dep_name}
+          />
+          <InfoCard
+            icon={<FaUserTie className="text-yellow-500" />}
+            title="Marital Status"
+            value={employee.maritalStatus}
+          />
+          <InfoCard
+            icon={<FaEnvelope className="text-red-500" />}
+            title="Email"
+            value={employee.userId.email || 'N/A'}
+          />
+          <InfoCard
+            icon={<FaPhone className="text-purple-500" />}
+            title="Phone"
+            value={employee.phoneNumber || 'N/A'}
+          />
+          <InfoCard
+            icon={<FaBriefcase className="text-blue-600" />}
+            title="Designation"
+            value={employee.designation || 'N/A'}
+          />
+          <InfoCard
+            icon={<FaMoneyBillWave className="text-green-600" />}
+            title="Salary"
+            value={`₹${employee.salary.toLocaleString()}`}
+          />
+          <InfoCard
+            icon={<FaMapMarkedAlt className="text-gray-600" />}
+            title="Address"
+            value={employee.address || 'N/A'}
+          />
+          <InfoCard
+            icon={<FaRegCalendarAlt className="text-indigo-500" />}
+            title="Date of Joining"
+            value={formatDate(employee.createdAt)}
+          />
+        </div>
+      </div>
     </div>
   )
 }
+
+const InfoCard = ({ icon, title, value }) => (
+  <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all duration-300">
+    <div className="text-2xl">{icon}</div>
+    <div>
+      <p className="text-gray-700 font-semibold">{title}</p>
+      <p className="text-gray-600 text-sm">{value}</p>
+    </div>
+  </div>
+)
 
 export default ViewEmployee

@@ -61,13 +61,13 @@ export const columns=[
       return departments
     }
 
-    export const EmployeeButtons = ({_id}) => {
+    export const EmployeeButtons = ({Id}) => {
       const navigate = useNavigate();
       const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
     
       return (
         <div className="flex gap-2 space-x-3">
-          <button className="px-3 py-1 bg-teal-600 text-white rounded hover:bg-blue-700 transition" onClick={()=>navigate(`/admin-dashboard/employees/${_id}`)}>
+          <button className="px-3 py-1 bg-teal-600 text-white rounded hover:bg-blue-700 transition" onClick={()=>navigate(`/admin-dashboard/employees/${Id}`)}>
             View
           </button>
           <button className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-red-700 transition">
