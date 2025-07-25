@@ -5,6 +5,7 @@ import authRouter from './Routes/Auth.js'; // Corrected path
 import departmentRouter from './Routes/department.js';
 import EmployeeRouter from './Routes/employee.js';
 import connectToDatabase from './db/db.js';
+import SalaryRouter from './Routes/Salary.js'
 
 import dotenv from 'dotenv'; // Import dotenv
 dotenv.config(); // Load environment variables
@@ -21,6 +22,7 @@ app.use(express.static('Public/Uploads'))
 app.use('/api/auth', authRouter);
 app.use('/api/department', departmentRouter);
 app.use('/api/employee', EmployeeRouter);
+app.use('/api/salary', SalaryRouter);
 
 const PORT = process.env.PORT || 5000;
 

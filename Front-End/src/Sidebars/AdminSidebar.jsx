@@ -8,7 +8,7 @@ const AdminSidebar = () => {
     { to: '/admin-dashboard/employees', icon: <FcConferenceCall className='w-5 h-5' />, label: 'Employees' },
     { to: '/admin-dashboard/departments', icon: <FcDepartment className='w-5 h-5' />, label: 'Departments' },
     { to: '/leaves', icon: <FcPlanner className='w-5 h-5' />, label: 'Leaves' },
-    { to: '/salary', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Salary' },
+    { to: '/admin-dashboard/salary/add', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Salary' },
     { to: '/settings', icon: <FcServices className='w-5 h-5' />, label: 'Setting' },
   ];
 
