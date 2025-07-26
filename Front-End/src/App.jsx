@@ -1,7 +1,8 @@
 // App.jsx
 import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom'
 import Login from './Pages/Login'
+// Admin Routes 
 import Admindashboard from './Pages/Admin/Admindashboard'
 import Employeedashboard from './Pages/Employee/Employeedashboard'
 import PrivateRoutes from './Utils/PrivateRoutes'
@@ -16,6 +17,10 @@ import ViewEmployee from './Pages/Admin/ViewEmployee'
 import EditEmployee from './Pages/Admin/EditEmployee'
 import AddSalary from './Pages/Admin/AddSalary'
 import ViewSalary from './Pages/Admin/ViewSalary'
+// Employee Routes 
+import EmployeeSummary from './Components/EmpSummaryCard'
+import LeaveList from './Pages/Employee/LeaveList'
+import AddLeave from './Pages/Employee/AddLeave'
 
 function App() {
   return (
@@ -24,7 +29,7 @@ function App() {
       <Route path="/login" element={<Login />} />
 
 
-                                          {/* Admin Routes */}
+      {/* Admin Routes */}
       <Route
         path="/admin-dashboard"
         element={
@@ -36,20 +41,20 @@ function App() {
         }
       >
 
-      <Route index element={<AdminSummary/>}></Route>
-      <Route path='/admin-dashboard/departments' element={<DepartmentList/>}></Route>
-      <Route path='/admin-dashboard/add-department' element={<AddDepartment/>}></Route>
-      <Route path='/admin-dashboard/department/:id' element={<Editdepartment/>}></Route>
+        <Route index element={<AdminSummary />}></Route>
+        <Route path='/admin-dashboard/departments' element={<DepartmentList />}></Route>
+        <Route path='/admin-dashboard/add-department' element={<AddDepartment />}></Route>
+        <Route path='/admin-dashboard/department/:id' element={<Editdepartment />}></Route>
 
-      <Route path='/admin-dashboard/employees' element={<EmployeeList/>}></Route>
-      <Route path='/admin-dashboard/add-employee' element={<AddEmployee/>}></Route>
-      <Route path='/admin-dashboard/employees/:id' element={<ViewEmployee/>}></Route>
-      <Route path='/admin-dashboard/employees/edit/:id' element={<EditEmployee/>}></Route>
-      <Route path='/admin-dashboard/employees/salary/:id' element={<ViewSalary/>}></Route>
-      <Route path='/admin-dashboard/salary/add' element={<AddSalary/>}></Route>
+        <Route path='/admin-dashboard/employees' element={<EmployeeList />}></Route>
+        <Route path='/admin-dashboard/add-employee' element={<AddEmployee />}></Route>
+        <Route path='/admin-dashboard/employees/:id' element={<ViewEmployee />}></Route>
+        <Route path='/admin-dashboard/employees/edit/:id' element={<EditEmployee />}></Route>
+        <Route path='/admin-dashboard/employees/salary/:id' element={<ViewSalary />}></Route>
+        <Route path='/admin-dashboard/salary/add' element={<AddSalary />}></Route>
       </Route>
 
-                                        {/* Employee Routes  */}
+      {/* Employee Routes  */}
 
       <Route
         path="/employee-dashboard"
@@ -60,7 +65,14 @@ function App() {
             </RolebasedRoutes>
           </PrivateRoutes>
         }
-      />
+      >
+
+        <Route index element={<EmployeeSummary />}></Route>
+        <Route path='MyProfile/:id' element={<ViewEmployee />}></Route>
+        <Route path='Leaves' element={<LeaveList />}></Route>
+        <Route path='AddLeave' element={<AddLeave />}></Route>
+
+      </Route>
     </Routes>
   )
 }
