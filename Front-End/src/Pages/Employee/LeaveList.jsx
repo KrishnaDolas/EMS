@@ -1,123 +1,60 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import DataTable from 'react-data-table-component'
 import { Link } from 'react-router-dom'
-import { EmployeeButtons } from '../../Utils/Employeehelper'
-import { columns } from '../../Utils/Employeehelper'
+import { EmployeeButtons, columns } from '../../Utils/Employeehelper'
 import axios from 'axios'
-import { FcBusinessman } from "react-icons/fc";
+import { FcBusinessman, FcCalendar } from "react-icons/fc";
+import { useAuth } from '../../Context/Authcontext'
 
 const LeaveList = () => {
-    const [employees, setEmployees] = useState([])
-    const [empLoading, setEmpLoading] = useState(false)
-    const [filteredEmployee, setFilteredEmployee] = useState([])
+    const { user } = useAuth();
+    const [leaves, setLeaves] = useState([]);
+    const [filteredEmployee, setFilteredEmployee] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
-    useEffect(() => {
-        const fetchEmployees = async () => {
-            setEmpLoading(true)
-            try {
-                const response = await axios.get(`${apiUrl}/api/employee`, {
-                    headers: {
-                        "Authorization": `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                if (response.data.success) {
-                    let srno = 1;
-                    const data = await response.data.employees.map((emp) => ({
-                        _id: emp._id,
-                        srno: srno++,
-                        dep_name: emp.department.dep_name,
-                        name: emp.userId.name,
-                        dob: new Date(emp.dob).toLocaleDateString(),
-                        profileImage: emp.userId.profileImage ? (
-                            <img
-                                width={70}
-                                height={70}
-                                className="rounded-full object-cover border border-gray-300 shadow"
-                                src={`http://localhost:8000/${emp.userId.profileImage}`}
-                                alt="Profile"
-                            />
-                        ) : (
-                            <div className="w-[70px] h-[70px] flex items-center justify-center rounded-full bg-gray-100 border border-gray-300 shadow">
-                                <FcBusinessman className="w-10 h-10" />
-                            </div>
-                        ),
-                        action: <EmployeeButtons Id={emp._id} />,
-                    }));
-
-                    setEmployees(data);
-                    setFilteredEmployee(data)
-                }
-            } catch (error) {
-                if (error.response && !error.response.data.success) {
-                    alert(error.response.data.error)
-                }
+    const fetchLeaves = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/leave/${user._id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.data.success) {
+                setLeaves(response.data.leaves);
+                // Remove setFilteredSalaries if not needed
+            } else {
+                alert('Failed to fetch leaves');
             }
-            finally {
-                setEmpLoading(false)
-            }
+        } catch (error) {
+            alert(error.message);
         }
-        fetchEmployees();
-    }, [])
+    };
+
+    useEffect(() => {
+        fetchLeaves();
+    }, [user._id]); // Add dependency if user can change
 
     const handleFilter = (e) => {
-        const records = employees.filter((emp) => (
-            emp.name.toLowerCase().includes(e.target.value.toLowerCase())
-        ))
-        setFilteredEmployee(records)
+        const value = e.target.value.toLowerCase();
+        setSearchTerm(value);
+        const filtered = leaves.filter((leave) =>
+            leave.leaveType.toLowerCase().includes(value) ||
+            leave.reason.toLowerCase().includes(value)
+            // Add other fields if needed
+        );
+        setFilteredEmployee(filtered);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
+        return `${day}/${month}/${year}`;
     }
 
-    const customStyles = {
-        headRow: {
-            style: {
-                backgroundColor: '#0f766e',
-                color: '#ffffff',
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-            },
-        },
-        headCells: {
-            style: {
-                paddingLeft: '1rem',
-                paddingRight: '1rem',
-                paddingTop: '0.75rem',
-                paddingBottom: '0.75rem',
-                justifyContent: 'center',
-                display: 'flex',
-                alignItems: 'center',
-                textAlign: 'center', // make header text centered
-            },
-        },
-        rows: {
-            style: {
-                borderBottomWidth: '1px',
-                borderColor: '#E5E7EB',
-                '&:hover': {
-                    backgroundColor: '#f1f5f9',
-                },
-            },
-        },
-        cells: {
-            style: {
-                paddingLeft: '1rem',
-                paddingRight: '1rem',
-                paddingTop: '0.75rem',
-                paddingBottom: '0.75rem',
-                textAlign: 'center', // center align cell data
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-            },
-        },
-        pagination: {
-            style: {
-                padding: '1rem',
-                justifyContent: 'flex-end',
-            },
-        },
-    };
+    const displayedLeaves = searchTerm ? filteredEmployee : leaves;
 
     return (
         <div>
@@ -147,10 +84,10 @@ const LeaveList = () => {
                     <div className="relative w-full sm:w-1/3">
                         <input
                             type="text"
-                            placeholder="Search departments..."
+                            placeholder="Search leaves..."
+                            value={searchTerm}
                             onChange={handleFilter}
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-teal-500"
-                        // onChange={filterDepartments}
                         />
                         <svg
                             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -175,17 +112,41 @@ const LeaveList = () => {
                 </div>
 
                 {/* Table */}
-                {/* <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-lg bg-white max-w-[1500px] mx-auto">
-          <DataTable
-            columns={columns}
-            data={filteredEmployee}
-            pagination
-            customStyles={customStyles}
-          />
-        </div> */}
+                <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-blue-100">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">SR No</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <FcBusinessman className="inline-block mr-1" /> Leave Type
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">From</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">To</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Discription</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Applied Date</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <FcCalendar className="inline-block mr-1" /> Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                            {displayedLeaves.map((leave, index) => (
+                                <tr key={leave._id} className="hover:bg-blue-50 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-700">{leave.leaveType}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{formatDate(leave.startDate)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{formatDate(leave.endDate)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap font-bold text-green-600">{leave.reason}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{formatDate(leave.appliedAt)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{leave.status}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     )
 }
 
-export default LeaveList
+export default LeaveList;
