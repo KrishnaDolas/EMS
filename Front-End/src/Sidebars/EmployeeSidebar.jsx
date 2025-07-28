@@ -9,8 +9,8 @@ const EmployeeSidebar = () => {
     { to: '/Employee-dashboard', icon: <FcHome className='w-5 h-5' />, label: 'Dashboard' },
     { to: `/Employee-dashboard/MyProfile/${user._id}`, icon: <FcConferenceCall className='w-5 h-5' />, label: 'MyProfile' },
     { to: 'Leaves', icon: <FcDepartment className='w-5 h-5' />, label: 'Leave' },
-    { to: 'Employee-dashboard/Salary', icon: <FcPlanner className='w-5 h-5' />, label: 'Salary' },
-    { to: 'Employee-dashboard/Setting', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Setting' },
+    { to: `Salary/${user._id}`, icon: <FcPlanner className='w-5 h-5' />, label: 'Salary' },
+    { to: 'Setting', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Setting' },
     // { to: '/settings', icon: <FcServices className='w-5 h-5' />, label: 'Setting' },
   ];
 

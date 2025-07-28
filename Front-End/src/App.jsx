@@ -21,6 +21,7 @@ import ViewSalary from './Pages/Admin/ViewSalary'
 import EmployeeSummary from './Components/EmpSummaryCard'
 import LeaveList from './Pages/Employee/LeaveList'
 import AddLeave from './Pages/Employee/AddLeave'
+import EmpSetting from './Pages/Employee/EmpSetting'
 
 function App() {
   return (
@@ -71,6 +72,8 @@ function App() {
         <Route path='MyProfile/:id' element={<ViewEmployee />}></Route>
         <Route path='Leaves' element={<LeaveList />}></Route>
         <Route path='AddLeave' element={<AddLeave />}></Route>
+        <Route path='Salary/:id' element={<ViewSalary />}></Route>
+        <Route path='Setting' element={<EmpSetting />}></Route>
 
       </Route>
     </Routes>

@@ -7,6 +7,7 @@ import EmployeeRouter from './Routes/employee.js';
 import connectToDatabase from './db/db.js';
 import SalaryRouter from './Routes/Salary.js'
 import LeaveRouter from './Routes/Leave.js'
+import SettingRouter from './Routes/Setting.js'
 
 import dotenv from 'dotenv'; // Import dotenv
 dotenv.config(); // Load environment variables
@@ -25,6 +26,7 @@ app.use('/api/department', departmentRouter);
 app.use('/api/employee', EmployeeRouter);
 app.use('/api/salary', SalaryRouter);
 app.use('/api/leave', LeaveRouter);
+app.use('/api/setting', SettingRouter);
 
 const PORT = process.env.PORT || 5000;
 
