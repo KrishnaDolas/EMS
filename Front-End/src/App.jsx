@@ -17,6 +17,8 @@ import ViewEmployee from './Pages/Admin/ViewEmployee'
 import EditEmployee from './Pages/Admin/EditEmployee'
 import AddSalary from './Pages/Admin/AddSalary'
 import ViewSalary from './Pages/Admin/ViewSalary'
+import AdminLeaveList from './Pages/Admin/LeaveList'
+import LeaveDetail from './Pages/Admin/LeaveDetail'
 // Employee Routes 
 import EmployeeSummary from './Components/EmpSummaryCard'
 import LeaveList from './Pages/Employee/LeaveList'
@@ -53,6 +55,8 @@ function App() {
         <Route path='/admin-dashboard/employees/edit/:id' element={<EditEmployee />}></Route>
         <Route path='/admin-dashboard/employees/salary/:id' element={<ViewSalary />}></Route>
         <Route path='/admin-dashboard/salary/add' element={<AddSalary />}></Route>
+        <Route path='/admin-dashboard/leaveList' element={<AdminLeaveList />}></Route>
+        <Route path='/admin-dashboard/leaveList/leavedetails/:id' element={<LeaveDetail />}></Route>
       </Route>
 
       {/* Employee Routes  */}
