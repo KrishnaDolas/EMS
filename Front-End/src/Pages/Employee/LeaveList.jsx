@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FcBusinessman, FcCalendar } from 'react-icons/fc';
 import { useAuth } from '../../Context/Authcontext';
@@ -9,24 +9,32 @@ const LeaveList = () => {
   const [leaves, setLeaves] = useState([]);
   const [filteredLeaves, setFilteredLeaves] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const { empId } = useParams();
+const id = user.role === 'admin' ? empId : user._id;
   const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
-  const fetchLeaves = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/leave/${user._id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      if (response.data.success) {
-        setLeaves(response.data.leaves);
-      } else {
-        alert('Failed to fetch leaves');
-      }
-    } catch (error) {
-      alert(error.message);
+ const fetchLeaves = async () => {
+  try {
+    const url =
+      user.role === 'admin' && !empId
+        ? `${apiUrl}/api/leave`
+        : `${apiUrl}/api/leave/${id}`;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (response.data.success) {
+      setLeaves(response.data.leaves);
+    } else {
+      alert('Failed to fetch leaves');
     }
-  };
+  } catch (error) {
+    alert(error.message);
+  }
+};
 
   useEffect(() => {
     if (user?._id) {
@@ -98,13 +106,14 @@ const LeaveList = () => {
             />
           </svg>
         </div>
-
+        {user.role === 'employee' &&
         <Link
           to="/employee-dashboard/AddLeave"
           className="inline-block px-5 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-200 shadow"
         >
           + Add New Leave
         </Link>
+        }
       </div>
 
       {/* Table */}

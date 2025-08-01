@@ -41,23 +41,42 @@ const addLeave = async (req, res) => {
 
 const getLeave = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const id = req.params.id;
 
-    // ✅ 1) Find employee for this user
-    const employee = await Employee.findOne({ userId: userId });
+    // Try finding by userId first
+    let employee = await Employee.findOne({ userId: id });
+
+    // If not found, try finding by _id
     if (!employee) {
-      return res.status(404).json({ success: false, error: "No Employee found for this userId" });
+      employee = await Employee.findById(id);
     }
 
-    // ✅ 2) Get leaves for that employee._id
-    const leaves = await Leave.find({ employeeId: employee._id });
+    if (!employee) {
+      return res.status(404).json({ success: false, error: "No Employee found for this ID" });
+    }
+
+    const leaves = await Leave.find({ employeeId: employee._id }).populate({
+      path: "employeeId",
+      populate: [
+        {
+          path: "department",
+          select: "dep_name",
+        },
+        {
+          path: "userId",
+          select: "name profileImage",
+        },
+      ],
+    });
 
     res.json({ success: true, leaves });
   } catch (error) {
-    console.error('Error fetching leaves:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    console.error("Error fetching leaves:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+
 
 const getLeaves = async (req, res) => {
   try {

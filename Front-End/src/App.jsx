@@ -57,6 +57,8 @@ function App() {
         <Route path='/admin-dashboard/salary/add' element={<AddSalary />}></Route>
         <Route path='/admin-dashboard/leaveList' element={<AdminLeaveList />}></Route>
         <Route path='/admin-dashboard/leaveList/leavedetails/:id' element={<LeaveDetail />}></Route>
+        <Route path='/admin-dashboard/employees/leaves/:id' element={<LeaveList />}></Route>
+        <Route path='/admin-dashboard/settings' element={<EmpSetting />}></Route>
       </Route>
 
       {/* Employee Routes  */}
