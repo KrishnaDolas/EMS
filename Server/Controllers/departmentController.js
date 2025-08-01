@@ -57,15 +57,18 @@ const getDepartment = async(req,res)=>{
     }
     }
 
-    const deleteDepartment = async (req, res) => {
+  const deleteDepartment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedDep = await Department.findByIdAndDelete(id);
+    const deletedDep = await Department.findById(id);
 
     if (!deletedDep) {
       return res.status(404).json({ success: false, error: "Department not found" });
     }
+
+    // ✅ call deleteOne() on the document
+    await deletedDep.deleteOne();
 
     return res.status(200).json({ success: true, deletedDep });
   } catch (error) {
@@ -73,6 +76,7 @@ const getDepartment = async(req,res)=>{
     return res.status(500).json({ success: false, error: "Delete Department Server Error" });
   }
 };
+
 
   
 

@@ -71,7 +71,6 @@ const getLeave = async (req, res) => {
 
     res.json({ success: true, leaves });
   } catch (error) {
-    console.error("Error fetching leaves:", error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

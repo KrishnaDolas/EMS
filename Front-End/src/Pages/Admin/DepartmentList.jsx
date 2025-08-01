@@ -12,9 +12,8 @@ const DepartmentList = () => {
   const[depLoading,setDepLoading]=useState(false)
   const [filteredDepartments,setFilteredDepartments]= useState([])
 
-  const onDepartmentDelete = async (id)=>{
-    const data = departments.filter(dep=> dep._id !==id)
-    setDepartments(data)
+  const onDepartmentDelete = ()=>{
+    fetchDepartments();
   }
 
   const filterDepartments = (e)=>{
@@ -65,37 +64,37 @@ const DepartmentList = () => {
     },
   };
 
-  useEffect(()=>{
-    const fetchDepartments = async()=>{
-      setDepLoading(true)
-      try {
-        const response = await axios.get(`${apiUrl}/api/department`,{
-          headers:{
-            "Authorization": `Bearer ${localStorage.getItem('token')}`
+  const fetchDepartments = async()=>{
+    setDepLoading(true)
+    try {
+      const response = await axios.get(`${apiUrl}/api/department`,{
+        headers:{
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if(response.data.success){
+        let srno=1;
+        const data= await response.data.departments.map((dep)=>(
+          {
+            _id:dep._id,
+            srno: srno++,
+            dep_name:dep.dep_name,
+            action:(<DepartmentButtons _id={dep._id} onDepartmentDelete={onDepartmentDelete}/>)
           }
-        })
-        if(response.data.success){
-          let srno=1;
-          const data= await response.data.departments.map((dep)=>(
-            {
-              _id:dep._id,
-              srno: srno++,
-              dep_name:dep.dep_name,
-              action:(<DepartmentButtons _id={dep._id} onDepartmentDelete={onDepartmentDelete}/>)
-            }
-          ))
-          setDepartments(data)
-          setFilteredDepartments(data)
-        }
-      } catch (error) {
-        if(error.response && !error.response.data.success){
-          alert(error.response.data.error)
-        }
+        ))
+        setDepartments(data)
+        setFilteredDepartments(data)
       }
-      finally{
-        setDepLoading(false)
+    } catch (error) {
+      if(error.response && !error.response.data.success){
+        alert(error.response.data.error)
       }
     }
+    finally{
+      setDepLoading(false)
+    }
+  }
+  useEffect(()=>{
     fetchDepartments();
   },[])
 
