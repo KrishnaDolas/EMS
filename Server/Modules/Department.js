@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Employee from './Employee.js'
 import Leave from './Leave.js'
 import Salary from './Salary.js'
+import {  } from "module";
 
 const departmentSchema = new mongoose.Schema({
     dep_name:{type:String,required:true},
