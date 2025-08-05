@@ -14,7 +14,7 @@ const EmpSetting = () => {
     confirmPassword: '',
   });
   const [error, setError] = useState(null);
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +28,7 @@ const EmpSetting = () => {
     } else {
       try {
         const response = await axios.put(
-          `${apiUrl}/api/setting/change-password`,
+          `${import.meta.env.VITE_API_URL}/api/setting/change-password`,
           setting,
           {
             headers: {

@@ -11,11 +11,11 @@ const LeaveList = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const fetchLeaves = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/leave`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leave`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -109,7 +109,7 @@ const LeaveList = () => {
   // Handle approve/reject
   const handleAction = async (id, status) => {
     try {
-      const res = await axios.put(`${apiUrl}/api/leave/${id}`, { status }, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/leave/${id}`, { status }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

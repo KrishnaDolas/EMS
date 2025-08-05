@@ -6,14 +6,14 @@ const Editdepartment = () => {
     const {id}= useParams()
     const [department,setDepartment]=useState([])
     const [depLoading,setDepLoading]=useState(false)
-    const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+    //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
     const navigate = useNavigate()
 
      useEffect(()=>{
     const fetchDepartments = async()=>{
       setDepLoading(true)
       try {
-        const response = await axios.get(`${apiUrl}/api/department/${id}`,{
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/department/${id}`,{
           headers:{
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           }
@@ -42,7 +42,7 @@ const Editdepartment = () => {
      e.preventDefault();
     try {
       const response = await axios.put(
-        `${apiUrl}/api/department/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/department/${id}`,
         department,
         {
           headers: {

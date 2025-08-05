@@ -5,12 +5,12 @@ import axios from 'axios';
 
 const AdminSummary = () => {
   const [summary,setSummary] = useState(null);
-    const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+    //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
  useEffect(() => {
   const fetchSummary = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/dashboard/summary`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/summary`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

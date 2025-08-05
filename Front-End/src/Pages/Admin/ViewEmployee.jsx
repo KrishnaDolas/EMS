@@ -24,7 +24,7 @@ const ViewEmployee = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/api/employee/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employee/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

@@ -11,14 +11,14 @@ const LeaveList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { empId } = useParams();
 const id = user.role === 'admin' ? empId : user._id;
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
  const fetchLeaves = async () => {
   try {
     const url =
       user.role === 'admin' && !empId
-        ? `${apiUrl}/api/leave`
-        : `${apiUrl}/api/leave/${id}`;
+        ? `${import.meta.env.VITE_API_URL}/api/leave`
+        : `${import.meta.env.VITE_API_URL}/api/leave/${id}`;
 
     const response = await axios.get(url, {
       headers: {

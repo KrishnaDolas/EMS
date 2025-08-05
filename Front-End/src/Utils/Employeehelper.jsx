@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Navigate, useNavigate } from "react-router-dom";
-const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+//const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
 
 export const columns=[
@@ -45,7 +45,7 @@ export const columns=[
  export const fetchDepartments = async()=>{
     let departments
       try {
-        const response = await axios.get(`${apiUrl}/api/department`,{
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/department`,{
           headers:{
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           }
@@ -65,7 +65,7 @@ export const columns=[
  export const getEmployees = async(id)=>{
     let employees
       try {
-        const response = await axios.get(`${apiUrl}/api/employee/department/${id}`,{
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/employee/department/${id}`,{
           headers:{
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           }
@@ -84,7 +84,7 @@ export const columns=[
 
     export const EmployeeButtons = ({Id}) => {
       const navigate = useNavigate();
-      const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';  
+      //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';  
       
     
       return (

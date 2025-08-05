@@ -7,7 +7,7 @@ import axios from 'axios'; // ← Don’t forget this if not imported
 const AddLeave = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+    //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
     const [leave, setLeave] = useState({
         userId: user._id,
@@ -29,7 +29,7 @@ const AddLeave = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post(`${apiUrl}/api/leave/add`, leave, {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/leave/add`, leave, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

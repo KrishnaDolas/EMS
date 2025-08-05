@@ -11,13 +11,13 @@ const EmployeeList = () => {
   const [employees, setEmployees] = useState([])
   const [empLoading, setEmpLoading] = useState(false)
   const [filteredEmployee, setFilteredEmployee]=useState([])
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   useEffect(() => {
     const fetchEmployees = async () => {
       setEmpLoading(true)
       try {
-        const response = await axios.get(`${apiUrl}/api/employee`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/employee`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           }

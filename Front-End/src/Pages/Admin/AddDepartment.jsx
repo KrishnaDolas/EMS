@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddDepartment = () => {
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  // //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const [department, setDepartment] = useState({
     dep_name: '',
@@ -21,7 +21,7 @@ const AddDepartment = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${apiUrl}/api/department/add`,
+        `${import.meta.env.VITE_API_URL}/api/department/add`,
         department,
         {
           headers: {

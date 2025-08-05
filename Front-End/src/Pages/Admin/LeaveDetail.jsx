@@ -18,7 +18,7 @@ const LeaveDetail = () => {
   useEffect(() => {
     const fetchLeave = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/api/leave/detail/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/leave/detail/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -54,7 +54,7 @@ const LeaveDetail = () => {
 
   const handleAction = async (id,status)=>{
      try {
-        const res = await axios.put(`${apiUrl}/api/leave/${id}`,{status}, {
+        const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/leave/${id}`,{status}, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

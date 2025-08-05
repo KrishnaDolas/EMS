@@ -22,13 +22,13 @@ export const columns=[
 
 export const DepartmentButtons = ({_id,onDepartmentDelete}) => {
   const navigate = useNavigate()
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const handleDelete= async(id)=>{
     const confirm = window.confirm("Do you want to delete this entry ?")
      if(confirm){
      try {
-            const response = await axios.delete(`${apiUrl}/api/department/${id}`,{
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/department/${id}`,{
               headers:{
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
               }

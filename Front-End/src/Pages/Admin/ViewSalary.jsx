@@ -6,12 +6,12 @@ import { FcSearch, FcMoneyTransfer, FcCalendar, FcBusinessman } from 'react-icon
 const ViewSalary = () => {
   const [salaries, setSalaries] = useState(null);
   const [filteredSalaries, setFilteredSalaries] = useState(null);
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
   const { id } = useParams();
 
   const fetchSalaries = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/salary/${id}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/salary/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

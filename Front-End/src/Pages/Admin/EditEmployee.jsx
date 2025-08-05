@@ -40,7 +40,7 @@ const EditEmployee = () => {
   const [departments, setDepartments] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   // Fetch departments on component mount
   useEffect(() => {
@@ -55,7 +55,7 @@ const EditEmployee = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/api/employee/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employee/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -97,7 +97,7 @@ const EditEmployee = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.put(`${apiUrl}/api/employee/${id}`, employee, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/employee/${id}`, employee, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

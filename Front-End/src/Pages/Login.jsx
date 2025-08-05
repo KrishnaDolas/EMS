@@ -9,14 +9,12 @@ function Login (){
   const [error,setError]=useState(null)
   const {login}= useAuth()
   const navigate = useNavigate()
-  const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   const handleSubmit= async (e)=>{
     e.preventDefault()
     try {
-      const response = await axios.post(`${apiUrl}/api/auth/login`,
-      {email,password}
-      );
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       if (response.data.success) {
        login(response.data.user)
        localStorage.setItem("token",response.data.token)
