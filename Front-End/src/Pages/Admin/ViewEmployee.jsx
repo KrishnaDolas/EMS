@@ -59,7 +59,7 @@ const ViewEmployee = () => {
         <div className="absolute top-6 right-6">
           {employee.userId.profileImage && employee.userId.profileImage.trim().length > 0 ? (
             <img
-              src={`http://localhost:8000/${employee.userId.profileImage}`}
+              src={employee.userId.profileImage}
               alt="Profile"
               className="w-36 h-36 md:w-44 md:h-44 rounded-full object-cover border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300"
             />
@@ -68,6 +68,7 @@ const ViewEmployee = () => {
               <FcBusinessman className="w-24 h-24 md:w-28 md:h-28" />
             </div>
           )}
+
         </div>
 
 

@@ -74,19 +74,25 @@ const LeaveDetail = () => {
     <div className="max-w-5xl mx-auto px-6 py-16 relative">
       <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl shadow-2xl p-10 relative overflow-hidden">
         {/* Profile Image — top right */}
-        <div className="absolute top-6 right-6 pb-4">
-  {leave.employeeId.userId.profileImage && leave.employeeId.userId.profileImage.trim().length > 0 ? (
+     <div className="absolute top-6 right-6 pb-4">
+  {leave.employeeId.userId.profileImage &&
+  leave.employeeId.userId.profileImage.trim().length > 0 ? (
     <img
-      src={`http://localhost:8000/${leave.employeeId.userId.profileImage}`}
-      alt="Profile"
-      className="w-36 h-36 md:w-44 md:h-44 rounded-full object-cover border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300"
-    />
+  src={leave.employeeId.userId.profileImage}
+  onError={() => console.log("Image failed to load")}
+  alt="Profile"
+  className="w-36 h-36 rounded-full"
+/>
+
   ) : (
     <div className="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-full bg-white border-4 border-white shadow-lg">
       <FcBusinessman className="w-24 h-24 md:w-28 md:h-28" />
     </div>
   )}
 </div>
+
+
+
 
 
         {/* Heading */}

@@ -11,7 +11,6 @@ const EmployeeList = () => {
   const [employees, setEmployees] = useState([])
   const [empLoading, setEmpLoading] = useState(false)
   const [filteredEmployee, setFilteredEmployee] = useState([])
-  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -30,12 +29,13 @@ const EmployeeList = () => {
             dep_name: emp.department.dep_name,
             name: emp.userId.name,
             dob: new Date(emp.dob).toLocaleDateString(),
+
             profileImage: emp.userId.profileImage ? (
               <img
                 width={70}
                 height={70}
                 className="rounded-full object-cover border border-gray-300 shadow"
-                src={`data:image/jpeg;base64,${emp.userId.profileImage}`}
+                src={emp.userId.profileImage} // Full data:image/jpeg;base64,... already provided
                 alt="Profile"
               />
             ) : (
@@ -48,26 +48,25 @@ const EmployeeList = () => {
           }));
 
           setEmployees(data);
-          setFilteredEmployee(data)
+          setFilteredEmployee(data);
         }
       } catch (error) {
         if (error.response && !error.response.data.success) {
-          alert(error.response.data.error)
+          alert(error.response.data.error);
         }
+      } finally {
+        setEmpLoading(false);
       }
-      finally {
-        setEmpLoading(false)
-      }
-    }
+    };
     fetchEmployees();
-  }, [])
+  }, []);
 
   const handleFilter = (e) => {
-    const records = employees.filter((emp) => (
+    const records = employees.filter((emp) =>
       emp.name.toLowerCase().includes(e.target.value.toLowerCase())
-    ))
-    setFilteredEmployee(records)
-  }
+    );
+    setFilteredEmployee(records);
+  };
 
   const customStyles = {
     headRow: {
@@ -88,7 +87,7 @@ const EmployeeList = () => {
         justifyContent: 'center',
         display: 'flex',
         alignItems: 'center',
-        textAlign: 'center', // make header text centered
+        textAlign: 'center',
       },
     },
     rows: {
@@ -106,7 +105,7 @@ const EmployeeList = () => {
         paddingRight: '1rem',
         paddingTop: '0.75rem',
         paddingBottom: '0.75rem',
-        textAlign: 'center', // center align cell data
+        textAlign: 'center',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -148,10 +147,9 @@ const EmployeeList = () => {
           <div className="relative w-full sm:w-1/3">
             <input
               type="text"
-              placeholder="Search departments..."
+              placeholder="Search employees..."
               onChange={handleFilter}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-teal-500"
-            // onChange={filterDepartments}
             />
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -186,7 +184,7 @@ const EmployeeList = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EmployeeList
+export default EmployeeList;

@@ -6,7 +6,8 @@ import { FcSearch, FcMoneyTransfer, FcCalendar, FcBusinessman } from 'react-icon
 const ViewSalary = () => {
   const [salaries, setSalaries] = useState(null);
   const [filteredSalaries, setFilteredSalaries] = useState(null);
-  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  const [loading, setLoading] = useState(true);
+
   const { id } = useParams();
 
   const fetchSalaries = async () => {
@@ -16,12 +17,19 @@ const ViewSalary = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      if (response.data.success) {
+      if (response.data.success && response.data.salary.length > 0) {
         setSalaries(response.data.salary);
         setFilteredSalaries(response.data.salary);
+      } else {
+        setSalaries([]);
+        setFilteredSalaries([]);
       }
     } catch (error) {
-      alert(error.message);
+      console.error("Error fetching salary:", error);
+      setSalaries([]);
+      setFilteredSalaries([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,10 +49,8 @@ const ViewSalary = () => {
 
   return (
     <div className="p-8 bg-gradient-to-br from-blue-50 to-white min-h-screen">
-      {filteredSalaries === null ? (
-        <div className="text-center text-lg font-semibold text-gray-600">
-          Loading...
-        </div>
+      {loading ? (
+        <div className="text-center text-lg font-semibold text-gray-600">Loading...</div>
       ) : (
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-6">
@@ -56,44 +62,32 @@ const ViewSalary = () => {
             </p>
           </div>
 
-          <div className="flex justify-end mb-4">
-            <div className="relative">
-              <FcSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl" />
-              <input
-                type="text"
-                placeholder="Search by EMP ID"
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-                onChange={filterSalaries}
-              />
+          {salaries.length > 0 && (
+            <div className="flex justify-end mb-4">
+              <div className="relative">
+                <FcSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl" />
+                <input
+                  type="text"
+                  placeholder="Search by EMP ID"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  onChange={filterSalaries}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
-          {filteredSalaries.length > 0 ? (
+          {filteredSalaries && filteredSalaries.length > 0 ? (
             <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-blue-100">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      SR No
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      <FcBusinessman className="inline-block mr-1" /> Emp ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Basic Salary
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Allowance
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Deduction
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Total
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      <FcCalendar className="inline-block mr-1" /> Pay Date
-                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">SR No</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"><FcBusinessman className="inline-block mr-1" /> Emp ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Basic Salary</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Allowance</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Deduction</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Total</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"><FcCalendar className="inline-block mr-1" /> Pay Date</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
@@ -106,9 +100,7 @@ const ViewSalary = () => {
                       <td className="px-6 py-4 whitespace-nowrap">₹ {salary.basicSalary}</td>
                       <td className="px-6 py-4 whitespace-nowrap">₹ {salary.allowance}</td>
                       <td className="px-6 py-4 whitespace-nowrap">₹ {salary.deductions}</td>
-                      <td className="px-6 py-4 whitespace-nowrap font-bold text-green-600">
-                        ₹ {salary.netSalary}
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold text-green-600">₹ {salary.netSalary}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {new Date(salary.payDate).toLocaleDateString()}
                       </td>
@@ -118,8 +110,8 @@ const ViewSalary = () => {
               </table>
             </div>
           ) : (
-            <div className="text-center text-gray-500 py-10">
-              No Records Found
+            <div className="text-center text-gray-500 py-10 text-xl font-medium">
+              No Salary Records Found
             </div>
           )}
         </div>
