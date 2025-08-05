@@ -10,7 +10,7 @@ import { FcBusinessman } from "react-icons/fc";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([])
   const [empLoading, setEmpLoading] = useState(false)
-  const [filteredEmployee, setFilteredEmployee]=useState([])
+  const [filteredEmployee, setFilteredEmployee] = useState([])
   //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const EmployeeList = () => {
                 width={70}
                 height={70}
                 className="rounded-full object-cover border border-gray-300 shadow"
-                src={`http://localhost:8000/${emp.userId.profileImage}`}
+                src={`data:image/jpeg;base64,${emp.userId.profileImage}`}
                 alt="Profile"
               />
             ) : (
@@ -43,6 +43,7 @@ const EmployeeList = () => {
                 <FcBusinessman className="w-10 h-10" />
               </div>
             ),
+
             action: <EmployeeButtons Id={emp._id} />,
           }));
 
@@ -61,8 +62,8 @@ const EmployeeList = () => {
     fetchEmployees();
   }, [])
 
-  const handleFilter = (e) =>{
-    const  records = employees.filter((emp) =>(
+  const handleFilter = (e) => {
+    const records = employees.filter((emp) => (
       emp.name.toLowerCase().includes(e.target.value.toLowerCase())
     ))
     setFilteredEmployee(records)
