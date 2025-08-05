@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { FaUser, FaEnvelope, FaIdBadge, FaCalendarAlt, FaVenusMars, FaRing, FaBriefcase, FaBuilding, FaDollarSign, FaLock, FaUserTie, FaImage, FaCheckCircle } from 'react-icons/fa';
+import {
+  FaUser, FaEnvelope, FaIdBadge, FaCalendarAlt, FaVenusMars, FaRing,
+  FaBriefcase, FaBuilding, FaDollarSign, FaLock, FaUserTie, FaImage, FaCheckCircle
+} from 'react-icons/fa';
 import { fetchDepartments } from '../../Utils/Employeehelper';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 const SuccessModal = ({ message, onClose }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
     <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-6 max-w-sm w-full shadow-lg border border-white border-opacity-20 animate-fadeIn">
-      {/* Done Icon with bounce animation */}
       <div className="flex justify-center mb-4 animate-bounce">
         <FaCheckCircle className="text-4xl text-green-500" />
       </div>
-      {/* Message */}
       <h2 className="text-xl font-semibold text-center text-gray-800 mb-4">{message}</h2>
-      {/* Okay Button */}
       <div className="flex justify-center">
         <button
           onClick={onClose}
@@ -30,21 +30,31 @@ const AddEmployee = () => {
   const [departments, setDepartments] = useState([]);
   const [formData, setFormData] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
-  const navigate = useNavigate()
-  //const apiUrl = 'https://bq6kmv94-8000.inc1.devtunnels.ms';
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getdepartments = async () => {
+    const getDepartments = async () => {
       const depts = await fetchDepartments();
       setDepartments(depts);
     };
-    getdepartments();
+    getDepartments();
   }, []);
 
-  const handleChange = (e) => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
-    if (name === 'image') {
-      setFormData((prevData) => ({ ...prevData, [name]: files[0] }));
+
+    if (name === 'image' && files.length > 0) {
+      const base64 = await convertToBase64(files[0]);
+      setFormData((prevData) => ({ ...prevData, profileImage: base64 }));
     } else {
       setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
@@ -52,24 +62,20 @@ const AddEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataObj = new FormData();
-    Object.keys(formData).forEach((key) => {
-      formDataObj.append(key, formData[key]);
-    });
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/employee/add`,
-        formDataObj,
+        formData,
         {
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
       if (response.data.success) {
-        // Show success modal
         setShowSuccess(true);
-        // Reset form data
         setFormData({});
       }
     } catch (error) {
