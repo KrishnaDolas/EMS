@@ -24,6 +24,8 @@ import EmployeeSummary from './Components/EmpSummaryCard'
 import LeaveList from './Pages/Employee/LeaveList'
 import AddLeave from './Pages/Employee/AddLeave'
 import EmpSetting from './Pages/Employee/EmpSetting'
+import Attendance from './Pages/Admin/Attendance'
+import AttendanceReport from './Pages/Admin/AttendanceReport'
 
 function App() {
   return (
@@ -59,6 +61,8 @@ function App() {
         <Route path='/admin-dashboard/leaveList/leavedetails/:id' element={<LeaveDetail />}></Route>
         <Route path='/admin-dashboard/employees/leaves/:id' element={<LeaveList />}></Route>
         <Route path='/admin-dashboard/settings' element={<EmpSetting />}></Route>
+        <Route path='/admin-dashboard/attendance' element={<Attendance />}></Route>
+        <Route path='/admin-dashboard/attendance-report' element={<AttendanceReport />}></Route>
       </Route>
 
       {/* Employee Routes  */}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { FcHome, FcConferenceCall, FcDepartment, FcPlanner, FcMoneyTransfer, FcServices } from "react-icons/fc";
+import { FcHome, FcConferenceCall, FcDepartment, FcPlanner, FcMoneyTransfer, FcServices, FcCalendar,FcSalesPerformance  } from "react-icons/fc";
 
 const AdminSidebar = () => {
   const navItems = [
@@ -9,7 +9,9 @@ const AdminSidebar = () => {
     { to: '/admin-dashboard/departments', icon: <FcDepartment className='w-5 h-5' />, label: 'Departments' },
     { to: '/admin-dashboard/leaveList', icon: <FcPlanner className='w-5 h-5' />, label: 'Leaves' },
     { to: '/admin-dashboard/salary/add', icon: <FcMoneyTransfer className='w-5 h-5' />, label: 'Salary' },
-    { to: '/admin-dashboard/settings', icon: <FcServices className='w-5 h-5' />, label: 'Setting' },
+    { to: '/admin-dashboard/attendance', icon: <FcCalendar className='w-5 h-5' />, label: 'Attendance' },
+    { to: '/admin-dashboard/attendance-report', icon: <FcSalesPerformance  className='w-5 h-5' />, label: 'Attendance Report' },
+    { to: '/admin-dashboard/settings', icon: <FcServices className='w-5 h-5' />, label: 'Setting' },  
   ];
 
   return (
