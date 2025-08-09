@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import DataTable from 'react-data-table-component'
 import { Link } from 'react-router-dom'
-import { AttendanceHelper } from '../../Utils/Attendancehelper'
+import { Attendancehelper } from '../../Utils/Attendancehelper'
 import { columns } from '../../Utils/Employeehelper'
 import axios from 'axios'
 import { FcBusinessman } from "react-icons/fc";
@@ -20,25 +20,30 @@ const Attendance = () => {
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         }
       })
-      if (response.data.success) {
-        let srno = 1;
-        const data = await response.data.attendance.map((att) => ({
-          employeeId: att.employeeId.employeeId,
-          srno: srno++,
-          department: att.employeeId.department.dep_name,
-          name: att.employeeId.userId.name,
-          action: <AttendanceHelper status={att.status} />,
-        }));
+     if (response.data.success) {
+    let srno = 1;
+    const data = response.data.attendance.map((att) => ({
+        srno: srno++,
+        department: att.employeeId.department?.dep_name || "N/A",
+        name: att.employeeId.userId?.name || "N/A",
+        employeeId: att.employeeId?._id || "N/A",
+        action: <Attendancehelper status={att.status} />
+    }));
 
-        setAttendance(data);
-        setFilteredAttendance(data);
-      }
+    setAttendance(data);
+    setFilteredAttendance(data);
+}
+
     } catch (error) {
-      if (error.response && !error.response.data.success) {
-        alert(error.response.data.error);
-      }
+    if (error.response && !error.response.data.success) {
+        alert(error.response.data.message || "Something went wrong");
+        console.error("Full error:", error.response.data);
+    } else {
+        console.error("Network or unknown error:", error);
+    }
+
     } finally {
-      setEmpLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -46,10 +51,10 @@ const Attendance = () => {
   }, []);
 
   const handleFilter = (e) => {
-    const records = employees.filter((emp) =>
-      emp.name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setFilteredEmployee(records);
+    const records = attendance.filter((emp) =>
+  emp.employeeId.toLowerCase().includes(e.target.value.toLowerCase())
+);
+    setFilteredAttendance(records);
   };
 
   const customStyles = {
@@ -122,7 +127,7 @@ const Attendance = () => {
             />
           </svg>
           <h3 className="text-3xl font-bold text-gray-800">
-            Manage Employee
+            Manage Attendance
           </h3>
         </div>
 
@@ -135,6 +140,9 @@ const Attendance = () => {
               onChange={handleFilter}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-teal-500"
             />
+            <p>
+              Mark Employees for {new Date().toISOString().split('T')[0]}{''}
+            </p>
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
               fill="none"
@@ -150,10 +158,10 @@ const Attendance = () => {
             </svg>
           </div>
           <Link
-            to="/admin-dashboard/add-employee"
+            to="/admin-dashboard/attendance-report"
             className="inline-block px-5 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-200 shadow"
           >
-            + Add New Employee
+            Attendance Report
           </Link>
         </div>
 
@@ -161,7 +169,7 @@ const Attendance = () => {
         <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-lg bg-white max-w-[1500px] mx-auto">
           <DataTable
             columns={columns}
-            data={filteredEmployee}
+            data={filteredAttendance}
             pagination
             customStyles={customStyles}
           />

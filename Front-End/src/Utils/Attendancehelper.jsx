@@ -27,7 +27,7 @@ export const columns=[
     },
 ]
 
-const Attendancehelper = ({status}) => {
+export const Attendancehelper = ({status}) => {
   return (
     <div>
         {status == null ? (
@@ -44,4 +44,3 @@ const Attendancehelper = ({status}) => {
   )
 }
 
-export default Attendancehelper
