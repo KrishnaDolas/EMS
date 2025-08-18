@@ -49,6 +49,17 @@ const AdminSummary = () => {
 
       </div>
       </div>
+      <div className='mt-12'>
+  <h3 className='text-2xl font-bold mb-4'>Attendance Summary (Today)</h3>
+  <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+    <SummaryCard icon={<FcApproval />} text='Present' number={summary.attendanceSummary?.present || 0} />
+<SummaryCard icon={<FcDisapprove />} text='Absent' number={summary.attendanceSummary?.absent || 0} />
+<SummaryCard icon={<FcProcess />} text='Sick' number={summary.attendanceSummary?.sick || 0} />
+<SummaryCard icon={<FcFile />} text='Leave' number={summary.attendanceSummary?.leave || 0} />
+
+  </div>
+</div>
+
     </div>
   );
 };

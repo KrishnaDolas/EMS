@@ -10,59 +10,53 @@ const AttendanceReport = () => {
     leave: 0,
   });
   const [loading, setLoading] = useState(false);
+  const getToday = () => new Date().toISOString().split("T")[0];
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   // Fetch report
   const fetchReport = async () => {
-  setLoading(true);
-  try {
-    let url = `${import.meta.env.VITE_API_URL}/api/attendance/report`;
-    if (startDate && endDate) {
-      url += `?startDate=${startDate}&endDate=${endDate}`;
-    }
+    setLoading(true);
+    try {
+      let url = `${import.meta.env.VITE_API_URL}/api/attendance/report`;
+      if (startDate && endDate) {
+        url += `?startDate=${startDate}&endDate=${endDate}`;
+      }
 
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    if (response.data.success) {
-      const data = response.data.report.map((rec, index) => {
-        const date = rec.date
-          ? new Date(rec.date).toLocaleDateString("en-GB")
-          : "N/A";
-
-        return {
+      if (response.data.success) {
+        const data = response.data.report.map((rec, index) => ({
           srno: index + 1,
           employeeId: rec.employeeId || "N/A",
-          name: rec.name || "N/A",
-          department: rec.department?.dep_name || rec.department || "N/A",
-          date,
+          employeeName: rec.employeeName || "N/A",
+          department: rec.departmentName || "N/A",   // <-- fixed dep_name
+          date: rec.date || "N/A",             // keep raw date here
           status: rec.status || "N/A",
-        };
-      });
+        }));
+        setReport(data);
 
-      setReport(data);
-
-      // Build summary counts
-      const counts = { present: 0, absent: 0, sick: 0, leave: 0 };
-      data.forEach((rec) => {
-        const status = rec.status.toLowerCase();
-        if (status === "present") counts.present++;
-        if (status === "absent") counts.absent++;
-        if (status === "sick") counts.sick++;
-        if (status === "leave") counts.leave++;
-      });
-      setSummary(counts);
+        // Build summary counts
+        const counts = { present: 0, absent: 0, sick: 0, leave: 0 };
+        data.forEach((rec) => {
+          const status = rec.status.toLowerCase();
+          if (status === "present") counts.present++;
+          if (status === "absent") counts.absent++;
+          if (status === "sick") counts.sick++;
+          if (status === "leave") counts.leave++;
+        });
+        setSummary(counts);
+      }
+    } catch (error) {
+      console.error("Error fetching report:", error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error fetching report:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -155,22 +149,22 @@ const AttendanceReport = () => {
                   className="hover:bg-gray-50 transition"
                 >
                   <td className="px-4 py-2 border">{rec.employeeId}</td>
-                  <td className="px-4 py-2 border">{rec.name}</td>
+                  <td className="px-4 py-2 border">{rec.employeeName}</td>
                   <td className="px-4 py-2 border">{rec.department}</td>
                   <td className="px-4 py-2 border">
-                    {new Date(rec.date).toLocaleDateString()}
+                    {rec.date !== "N/A" ? new Date(rec.date).toLocaleDateString("en-GB") : "N/A"}
                   </td>
+
                   <td className="px-4 py-2 border">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        rec.status === "Present"
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${rec.status === "Present"
                           ? "bg-green-100 text-green-700"
                           : rec.status === "Absent"
-                          ? "bg-red-100 text-red-700"
-                          : rec.status === "Sick"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-blue-100 text-blue-700"
-                      }`}
+                            ? "bg-red-100 text-red-700"
+                            : rec.status === "Sick"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-blue-100 text-blue-700"
+                        }`}
                     >
                       {rec.status}
                     </span>

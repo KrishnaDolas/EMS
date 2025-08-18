@@ -1,10 +1,42 @@
-import {Attendance} from "../Modules/Attendance.js";
-import Employee  from '../Modules/Employee.js'
+// controllers/attendanceController.js
+import { Attendance } from "../Modules/Attendance.js";
+import Employee from "../Modules/Employee.js";
+
+// Helper: get today's date string in IST (YYYY-MM-DD)
+const todayIST = () =>
+  new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
 const getAttendance = async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = todayIST();
 
+    // 1) Fetch all employees (we'll upsert attendance rows for each)
+    const employees = await Employee.find({})
+      .populate('department')
+      .populate('userId');
+
+    // 2) Upsert one attendance document per employee for today
+    //    (status starts as null; you can change to "Absent" if you prefer)
+    if (employees.length) {
+      const ops = employees.map(emp => ({
+        updateOne: {
+          filter: { employeeId: emp._id, date: today },
+          update: {
+            $setOnInsert: {
+              employeeId: emp._id,
+              date: today,
+              status: null
+            }
+          },
+          upsert: true
+        }
+      }));
+
+      // Ignore duplicate conflicts if multiple requests race
+      await Attendance.bulkWrite(ops, { ordered: false });
+    }
+
+    // 3) Read back today's attendance, fully populated
     const attendance = await Attendance.find({ date: today })
       .populate({
         path: 'employeeId',
@@ -12,49 +44,51 @@ const getAttendance = async (req, res) => {
           { path: 'department' },
           { path: 'userId' }
         ]
-      });
-
-    console.log("Attendance result:", JSON.stringify(attendance, null, 2));
+      })
+      .sort({ 'employeeId.employeeId': 1 });
 
     res.status(200).json({ success: true, attendance });
   } catch (error) {
-  console.error("Backend error:", error);
-
-  res.status(500).json({
-    success: false,
-    message: error?.message || "Unknown server error",
-    stack: error?.stack || null,
-    error: JSON.parse(JSON.stringify(error)) // makes Mongoose errors serializable
-  });
-}
-
+    res.status(500).json({
+      success: false,
+      message: error?.message || "Unknown server error",
+      stack: error?.stack || null,
+      error: JSON.parse(JSON.stringify(error))
+    });
+  }
 };
 
 export const updateAttendance = async (req, res) => {
   try {
-    const { employeeId } = req.params;  // "KS1001"
-    const { status } = req.body;
-    const date = new Date().toISOString().split("T")[0];
+    const { employeeId } = req.params;       // e.g. "KS1001"
+    const { status } = req.body;             // "Present" | "Absent" | "Sick" | "Leave"
+    const today = todayIST();
 
-    // Find employee by code
+    // Find employee by business employeeId
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
       return res.status(404).json({ success: false, message: "Employee not found" });
     }
 
-    // Ensure attendance exists for today
-    let attendance = await Attendance.findOne({ employeeId: employee._id, date });
-    if (!attendance) {
-      attendance = new Attendance({ employeeId: employee._id, date, status });
-      await attendance.save();
-    } else {
-      attendance.status = status;
-      await attendance.save();
-    }
+    // Upsert today's attendance for that employee
+    const attendance = await Attendance.findOneAndUpdate(
+      { employeeId: employee._id, date: today },
+      { $set: { status } },
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true
+      }
+    ).populate({
+      path: 'employeeId',
+      populate: [
+        { path: 'department' },
+        { path: 'userId' }
+      ]
+    });
 
     res.status(200).json({ success: true, attendance });
   } catch (error) {
-    console.error("Update attendance error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -62,28 +96,29 @@ export const updateAttendance = async (req, res) => {
 export const getAttendanceReport = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-
-    // Build filter
     const filter = {};
+
     if (startDate && endDate) {
-      filter.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
+      filter.date = { $gte: startDate, $lte: endDate };
     }
 
-    // Get attendance data
     const attendanceRecords = await Attendance.find(filter)
-      .populate("employeeId", "employeeId name department")
+      .populate({
+        path: "employeeId",
+        select: "employeeId department userId",
+        populate: [
+          { path: "department", select: "dep_name" },
+          { path: "userId", select: "name" }
+        ]
+      })
       .sort({ date: -1 });
 
-    // Format the response
     const report = attendanceRecords.map((record) => ({
-      employeeId: record.employeeId?.employeeId || "N/A",
-      name: record.employeeId?.name || "N/A",
-      department: record.employeeId?.department || "N/A",
       date: record.date,
-      status: record.status, // present | absent | sick | leave
+      employeeId: record.employeeId?.employeeId || "N/A",
+      employeeName: record.employeeId?.userId?.name || "N/A",
+      departmentName: record.employeeId?.department?.dep_name || "N/A",
+      status: record.status ?? "N/A",
     }));
 
     res.status(200).json({
@@ -92,13 +127,11 @@ export const getAttendanceReport = async (req, res) => {
       report,
     });
   } catch (error) {
-    console.error("Error generating attendance report:", error);
     res.status(500).json({
       success: false,
       message: "Server Error: Could not fetch report",
     });
   }
 };
-
 
 export default getAttendance;
